@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bankdb
+    username: bankuser
+    password: bankpass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yaml
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.springframework.security: DEBUG
+    liquibase: DEBUG
+
+card:
+  bin: 999999
+  generation-count: 1000
+  cache-size: 100
+
+jwt:
+  secret: "7h0gmC2NeWiSY2LxyYsq0KrUkD7ocoBPfNcvIIuwKbHBfyqBrKtmXSBe5rv2aXDm"
+  expiration-ms: 3600000
+
+encryption:
+  key: "1234567890123456"
+  iv: "RandomInitVector"
+
+app:
+  pagination:
+    page-size: 20
