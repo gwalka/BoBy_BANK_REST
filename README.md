@@ -9,10 +9,10 @@ REST API для управления банковскими картами с а
 
 ## Быстрый старт
 ```bash
-git clone https://github.com/gwalka/BoBy_BANK_REST.git
+git clone https://github.com/gwalka/Boby_Bank_Rest.git
 ```
 ```bash
-cd BoBy_BANK_REST
+cd Boby_Bank_Rest
 ```
 ```bash
 docker-compose up --build
@@ -69,6 +69,7 @@ https://github.com/gwalka/Boby_Bank_Rest/blob/main/openapi.yaml
 
 ## Тестирование
 Ключевая бизнес-логика покрыта unit тестами
+
 
 
 
