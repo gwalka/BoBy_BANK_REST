@@ -14,4 +14,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findByExpiryDateBeforeAndStatusIn(LocalDate date, List<CardStatus> statuses);
 
     Page<Card> findByHolderId(Long userId, Pageable pageable);
+
+    List<Card> findByHolderId(Long holderId);
 }

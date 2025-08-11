@@ -5,3 +5,7 @@ databaseChangeLog:
       file: db/changelog/002_add_cards.sql
   - include:
       file: db/changelog/003_add_transactions.sql
+  - include:
+      file: db/changelog/004_add_admin_to_users.sql
+  - include:
+      file: db/changelog/005_add_generation_lock.sql

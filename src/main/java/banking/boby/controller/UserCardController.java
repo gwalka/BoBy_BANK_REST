@@ -55,9 +55,10 @@ public class UserCardController {
     @ApiResponse(responseCode = "200", description = "Список карт успешно получен")
     @GetMapping("/cards")
     public ResponseEntity<Page<CardUserDto>> getMyCards(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "2") int size) {
+                                                        @RequestParam(defaultValue = "2") int size,
+                                                        @RequestParam(required = false) String search) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id"));
-        Page<CardUserDto> cardsPage = userCardService.getMyCards(pageable);
+        Page<CardUserDto> cardsPage = userCardService.getMyCards(pageable, search);
         return ResponseEntity.ok(cardsPage);
     }
 

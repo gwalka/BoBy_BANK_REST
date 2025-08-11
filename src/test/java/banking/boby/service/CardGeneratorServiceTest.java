@@ -1,6 +1,7 @@
 package banking.boby.service;
 
 import banking.boby.entity.PreGeneratedCard;
+import banking.boby.repository.CardGenerationLockRepository;
 import banking.boby.repository.PreGeneratedCardRepository;
 import banking.boby.security.CardEncryptor;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,12 +20,17 @@ class CardGeneratorServiceTest {
     private CardEncryptor cardEncryptor;
     private PreGeneratedCardRepository preGeneratedCardRepository;
     private CardGeneratorService cardGeneratorService;
+    private CardGenerationLockRepository cardGenerationLockRepository;
 
     @BeforeEach
     void setUp() {
         cardEncryptor = mock(CardEncryptor.class);
         preGeneratedCardRepository = mock(PreGeneratedCardRepository.class);
-        cardGeneratorService = new CardGeneratorService(cardEncryptor, preGeneratedCardRepository);
+        cardGenerationLockRepository = mock(CardGenerationLockRepository.class);
+        cardGeneratorService = new CardGeneratorService(
+                cardEncryptor,
+                preGeneratedCardRepository,
+                cardGenerationLockRepository);
 
         setField(cardGeneratorService, "bin", "123456");
         setField(cardGeneratorService, "generateCount", 3);
@@ -34,7 +40,7 @@ class CardGeneratorServiceTest {
     void positiveGenerateCards() {
         int generateCount = 3;
 
-        when(preGeneratedCardRepository.findTopByOrderByIdDesc())
+        when(cardGenerationLockRepository.findTopByOrderByIdDesc())
                 .thenReturn(Optional.empty());
 
         when(cardEncryptor.encrypt(anyString()))
@@ -48,8 +54,8 @@ class CardGeneratorServiceTest {
         assertNotNull(result);
         assertEquals(generateCount, result.size());
 
-        verify(preGeneratedCardRepository).findTopByOrderByIdDesc();
-        verify(cardEncryptor, times(generateCount)).encrypt(anyString());
+        when(cardGenerationLockRepository.findTopByOrderByIdDesc()).thenReturn(Optional.empty());
+        verify(cardEncryptor, times(generateCount + 1)).encrypt(anyString());
         verify(preGeneratedCardRepository).saveAll(anyList());
     }
 

@@ -177,7 +177,7 @@ class UserCardServiceTest {
         when(cardRepository.findByHolderId(eq(userId), any(Pageable.class))).thenReturn(page);
         when(cardEncryptor.decrypt("encrypted")).thenReturn("1234567890123456");
 
-        Page<CardUserDto> result = userCardService.getMyCards(PageRequest.of(0, 10));
+        Page<CardUserDto> result = userCardService.getMyCards(PageRequest.of(0, 10), null);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("************3456", result.getContent().get(0).maskedNum());

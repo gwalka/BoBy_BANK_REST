@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -76,12 +77,33 @@ public class UserCardService {
                 request.amount(), fromCard.getId(), toCard.getId(), UserContext.getCurrentUserId());
     }
 
-    public Page<CardUserDto> getMyCards(Pageable pageable) {
+    public Page<CardUserDto> getMyCards(Pageable pageable, String search) {
         Long userId = UserContext.getCurrentUserId();
         assert userId != null;
 
-        return cardRepository.findByHolderId(userId, pageable)
-                .map(this::mapToCardUserDto);
+        if (search == null || search.isBlank()) {
+            return cardRepository.findByHolderId(userId, pageable)
+                    .map(this::mapToCardUserDto);
+        }
+        String digitsSearch = search.replaceAll("\\D", "");
+        if (digitsSearch.isEmpty()) {
+            return cardRepository.findByHolderId(userId, pageable)
+                    .map(this::mapToCardUserDto);
+        }
+        List<Card> allCards = cardRepository.findByHolderId(userId);
+        List<CardUserDto> filtered = allCards.stream()
+                .filter(card -> {
+                    String decrypted = cardEncryptor.decrypt(card.getEncryptedNumber());
+                    return decrypted.contains(digitsSearch);
+                })
+                .map(this::mapToCardUserDto)
+                .toList();
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), filtered.size());
+        List<CardUserDto> pageContent = (start <= end) ? filtered.subList(start, end) : List.of();
+
+        return new PageImpl<>(pageContent, pageable, filtered.size());
     }
 
     public BalanceResponseDto getBalance(Long cardId) {
