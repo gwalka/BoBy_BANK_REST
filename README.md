@@ -15,6 +15,9 @@ git clone https://github.com/gwalka/Boby_Bank_Rest.git
 cd Boby_Bank_Rest
 ```
 ```bash
+./gradlew clean build -x test
+```
+```bash
 docker-compose up --build
 ```
 
@@ -69,6 +72,7 @@ https://github.com/gwalka/Boby_Bank_Rest/blob/main/openapi.yaml
 
 ## Тестирование
 Ключевая бизнес-логика покрыта unit тестами
+
 
 
 
