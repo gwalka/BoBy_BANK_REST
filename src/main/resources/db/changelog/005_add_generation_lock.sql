@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS card_generation_lock (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    encrypted_card_number VARCHAR(255) NOT NULL UNIQUE
+);
